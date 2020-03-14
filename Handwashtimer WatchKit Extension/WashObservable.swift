@@ -17,6 +17,7 @@ class WashObservable: ObservableObject {
     @Published var startTime: Date
     @Published var endTime: Date
     @Published var interval: Int
+    @Published var permissions: Bool = false
     private let center = UNUserNotificationCenter.current()
     
     init() {
@@ -35,7 +36,7 @@ class WashObservable: ObservableObject {
     func createWashNotification(time: Int) {
         center.requestAuthorization(options: [.alert, .sound]) { (granted, err) in
             if granted {
-                print("yeah!")
+                self.permissions = true
             }
         }
         let content = UNMutableNotificationContent()
@@ -54,7 +55,7 @@ class WashObservable: ObservableObject {
         saveSettings(start: start, end: end, interval: interval)
         center.requestAuthorization(options: [.alert, .sound]) { (granted, err) in
             if granted {
-                print("yeah!")
+                self.permissions = true
             }
         }
         removeAllNotifications()
@@ -67,6 +68,7 @@ class WashObservable: ObservableObject {
         }
         self.startTime = start
         self.endTime = end
+        self.interval = interval
     }
     
     private func createNotification(_ hour: Int) {

@@ -26,7 +26,7 @@ struct ListRow<Content: View>: View {
 }
 
 struct Settings: View {
-    @State private var remindEvery = 1
+    @State private var remindEvery: Int
     @State private var startingAt: Date
     @State private var endingAt: Date
     @ObservedObject var washObservable: WashObservable
@@ -35,6 +35,7 @@ struct Settings: View {
     init(washObservable: WashObservable) {
         _startingAt = State(initialValue: washObservable.startTime)
         _endingAt = State(initialValue: washObservable.endTime)
+        _remindEvery = State(initialValue: washObservable.interval)
         self.washObservable = washObservable
     }
     
@@ -49,6 +50,20 @@ struct Settings: View {
     var body: some View {
         ZStack {
             ScrollView {
+                if (self.washObservable.permissions == false) {
+                    ListRow {
+                        HStack {
+                            Text("Permissions")
+                                .font(Font.system(.headline, design: .rounded))
+                            Spacer()
+                        }
+                        HStack {
+                            Text("This app needs permissions for sending notifications.")
+                            Spacer()
+                        }
+                    }
+                        .padding(.bottom)
+                }
                 ListRow {
                     HStack {
                         Text("Remind me every")
